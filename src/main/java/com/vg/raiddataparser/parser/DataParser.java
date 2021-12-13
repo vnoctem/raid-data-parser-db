@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.vg.raiddataparser.SpreadsheetRaidData;
 import com.vg.raiddataparser.model.Skill;
 import com.vg.raiddataparser.model.champion.Champion;
 import com.vg.raiddataparser.model.champion.attributes.ChampionAffinity;
@@ -37,9 +36,6 @@ public class DataParser {
     private static final String JSON_SKILL_DATA_NODE = "SkillData";
     private static final String JSON_SKILLS_NODE = "SkillTypes";
     private static final String JSON_STATIC_DATA_LOCALIZATION_NODE = "StaticDataLocalization";
-
-    @Autowired
-    private SpreadsheetRaidData spreadsheetRaidData;
 
     @Autowired
     private ChampionRepository championRepository;
@@ -142,10 +138,10 @@ public class DataParser {
                                 Skill skill = createSkill(rootNode, nodeSkills.get(i), champion);
 
                                 // Save Skill in database
+                                LOGGER.info("Saving skill in database: " + skill);
                                 skillRepository.save(skill);
 
                                 championSkills.add(skill);
-                                spreadsheetRaidData.addSkillToValues(skill);
 
                                 // Remove node to have fewer nodes to loop through in the next iteration
                                 nodeSkills.remove(i);
@@ -154,10 +150,9 @@ public class DataParser {
                     }
 
                     champion.setSkills(championSkills);
-                    spreadsheetRaidData.addChampionToValues(champion);
-                    spreadsheetRaidData.addMultiplierToValues(champion);
 
                     // Save champion in database
+                    LOGGER.info("Saving champion in database: " + champion);
                     championRepository.save(champion);
 
                 } catch (IOException e) {
@@ -168,22 +163,6 @@ public class DataParser {
                             e);
                 }
             }
-        }
-
-        try {
-            if (spreadsheetRaidData.isUpdating()) {
-                spreadsheetRaidData.updateMultiplierData();
-                spreadsheetRaidData.updateChampionData();
-                spreadsheetRaidData.updateSkillData();
-                spreadsheetRaidData.updateSpreadsheet();
-            } else {
-                spreadsheetRaidData.writeMultiplierDataToSheet();
-                spreadsheetRaidData.writeChampionDataToSheet();
-                spreadsheetRaidData.writeSkillDataToSheet();
-                spreadsheetRaidData.addBandingToSheets();
-            }
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
         }
 
         LOGGER.info("Data parsing completed");

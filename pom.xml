@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.vg</groupId>
-    <artifactId>raiddataparser</artifactId>
+    <artifactId>raid-data-parser-db</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>RaidDataParser</name>
-    <description>Raid data parser</description>
+    <name>Raid Data Parser Database</name>
+    <description>Raid data parser database</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.google.http-client</groupId>
             <artifactId>google-http-client-jackson2</artifactId>
-            <version>1.38.0</version>
+            <version>1.40.1</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
