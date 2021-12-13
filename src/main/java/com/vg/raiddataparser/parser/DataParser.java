@@ -117,7 +117,9 @@ public class DataParser {
                         .setCriticalHeal(calculateBaseStatValue(championCriticalHeal))
                         .build();
 
-
+                // Save champion in database
+                LOGGER.info("Saving champion in database: " + champion);
+                championRepository.save(champion);
 
                 // Get SkillData node
                 JsonNode nodeSkillData = rootNode.get(JSON_SKILL_DATA_NODE);
@@ -150,11 +152,6 @@ public class DataParser {
                     }
 
                     champion.setSkills(championSkills);
-
-                    // Save champion in database
-                    LOGGER.info("Saving champion in database: " + champion);
-                    championRepository.save(champion);
-
                 } catch (IOException e) {
                     LOGGER.error("Error while parsing champion's skills for champion (ID, name): "
                                     + championId
